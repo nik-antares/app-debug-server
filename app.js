@@ -11,9 +11,10 @@ app.post ('/logs', (req, res) => {
 	const logs = mongodb.logs ();
 	const data = req.body;
 	
-	data['ts'] = moment().utc().toISOString();
+	for (var i = 0; i < data.length; i++)
+		data[i]['serverTs'] = moment().utc().toISOString();
 
-	logs.insertOne (data, function(err, result) {
+	logs.insertMany (data, function(err, result) {
 		if (err) {
 			return res.send (false).status (500);
 		}
