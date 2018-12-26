@@ -1,26 +1,100 @@
-const express = require ('express');
-const mongodb = require ('./mongo-connect');
-const moment  = require ('moment');
+require ('app-module-path').addPath (__dirname);
+
+const express      = require ('express');
+const path         = require ('path');
+const cookieParser = require ('cookie-parser');
+const bodyParser   = require ('body-parser');
+const session      = require ('express-session');
+const redis        = require ('connect-redis')(session);
+const e_logger     = require ('express-bunyan-logger');
+
+const log          = require ('common/log');
+
+const logs         = require ('routes/log');
+const home         = require ('routes/home');
+
+const sess = { 
+	cookie: { 
+		secure: true,
+		proxy : true,
+	},
+	secret: '&^%Gbu45t;#tpxza12^%$',
+	saveUninitialized: false,
+	resave: true,
+	name  : 'app.log',
+	store : new redis ({ ttl: 1800 }),
+};
 
 const app = express ();
-const port = 3050;
 
-app.use(express.json());
+const port = '3000';
 
-app.post ('/logs', (req, res) => { 
-	const logs = mongodb.logs ();
-	const data = req.body;
-	
-	for (var i = 0; i < data.length; i++)
-		data[i]['serverTs'] = moment().utc().toISOString();
+app.listen (port);
 
-	logs.insertMany (data, function(err, result) {
-		if (err) {
-			return res.send (false).status (500);
-		}
+app.set ('views', __dirname + '/public/views');
+app.set ('view engine', 'jade');
 
-		return res.send (true).status (200);
-	});
+if (process.env.NODE_ENV === 'production')
+	app.set ('view cache', 'true');
+
+app.set ('trust proxy', true);
+sess.cookie.secure = true;
+
+app.use (express.static (path.join (__dirname, 'public')));
+
+app.use (cookieParser());
+app.use (bodyParser.json());
+app.use (bodyParser.urlencoded({ extended: false }));
+app.use (session(sess));
+
+//app.use ('/framework', express.static (__dirname + '/public/framework-react-mdb'));
+//app.use ('/exam/assets', express.static (__dirname + '/public/framework-react-mdb/dist/assets'));
+
+app.use (e_logger ({
+	genReqId: function (req) { 
+		return req.req_id; 
+	},
+	format  : "HTTP :incoming :status-code :method :url :remote-address :res-headers[cookie]",
+	excludes: [ 'req' , 'res', 'req-headers', 'res-headers', 'user-agent',
+		'body', 'short-body', 'response-hrtime', 'http-version',
+		'incoming', 'remote-address', 'method', 'url', 'status-code', 'ip'
+	],
+	levelFn : function (status, err) {
+		if (status >= 400)
+			return err;
+	},
+	logger  : log
+}));
+
+app.use (e_logger.errorLogger ({
+	showStack : true
+}));
+
+app.use ('/log', logs);
+app.use ('/home', home);
+
+app.use ('/ping', (req, res) => {
+	res.send ('pong');
 });
 
-app.listen(port, () => console.log(`App is running!`));
+/*
+ * Error handlers
+ * --------------------
+ * Development error handler - will print stacktrace
+ */
+
+app.use ((__err, req, res) => {
+	let message;
+
+	if (!__err)
+		return res.send (message);
+
+	if (req.xhr)
+		return res.send (__err);
+
+	message = __err.message;
+
+	return res.send (message);
+});
+
+module.exports = app;

@@ -1,0 +1,169 @@
+@import (css) './custom.css';
+@import       './variables';
+@import       './theme-default';
+
+body {
+	color       : #73879c;
+	font-family : "Helvetica Neue", Roboto, Arial, "Droid Sans", sans-serif;
+	font-size   : 13px;
+	font-weight : 400;
+	line-height : 1.471;
+}
+
+.containerMain {
+	width    : 100%;
+	height   : 100%;
+	position : absolute;
+	margin   : 0px;
+}
+
+div#containerSidebar {
+	color      : #fff;
+	background : @colorPrimary;
+	width      : 230px;
+	height     : 100%;
+	padding    : 0px;
+	position   : fixed;
+	z-index    : 1;
+}
+
+div#containerSkeleton {
+	padding       : 10px 20px;
+	padding-top   : 70px;
+	min-height    : 100%;
+	background    : #f7f7f7;
+	margin-left   : 0px;
+	padding-right : 40px;
+	padding-left  : 40px;
+}
+
+div.nav_menu {
+	position : absolute;
+	z-index  : 1;
+	height   : 60px
+}
+
+.customContainer {
+	margin        : 10px;
+	padding       : 10px 17px;
+	margin-top    : 0px;
+	margin-left   : 0px;
+	margin-right  : 0px;
+	background    : #fff;
+	border        : 1px solid #e6e9ed;
+	transition    : all .2s ease;
+}
+
+.outlineContainer {
+	border     : 1px solid #e6e9ed;
+	padding    : 10px 10px;
+	margin-top : 10px;
+}
+
+table, .table-bordered {
+	margin-top : 20px;
+
+	thead {
+		background : @colorPrimary;
+		color      : #fff;
+	}
+
+	tr th {
+		font-weight : 1000;
+		border      : 0px;
+	}
+}
+
+.underline {
+	border-bottom : 2px solid #e6e9ed;
+}
+
+button.btn {
+	margin-left : 0px;
+}
+
+.formSubmission {
+	margin-top : 20px;
+}
+
+.form-control-plaintext {
+	color : #73879c;
+}
+
+.displayNone {
+	display : none;
+}
+
+.displayFlex {
+	display : flex;
+}
+
+table tbody tr td div {
+	min-width : 100px;
+}
+
+.textImportant {
+	font-size : 20px;
+}
+
+a {
+	color : #23527c;
+}
+a:focus, a:hover {
+	color : #23527c;
+	text-decoration : underline;
+}
+
+.modal-dialog {
+	max-width : 75%;
+}
+
+.tableSearch {
+	margin-bottom : 10px;
+	float         : right;
+	max-width     : 200px;
+}
+
+.minWidth {
+	min-width : 250px;
+}
+
+table {
+	img {
+		max-height : 150px;
+		max-width  : 150px;
+	}
+}
+
+
+
+.modal-content {
+	min-height : 300px;
+	min-width  : 400px
+}
+
+.marginLeft {
+	margin-left : 10px !important;
+}
+
+.marginBottom {
+	margin-bottom : 10px !important;
+}
+
+.borderLeft {
+	border-left : 1px solid @colorSecondary;
+}
+
+.dataContainer {
+	min-width     : 250px;
+	margin-bottom : 30px;
+	padding-left  : 15px;
+}
+
+.headingBold {
+	font-weight : 600;
+}
+
+.headingBig {
+	font-size : 40px;
+}
